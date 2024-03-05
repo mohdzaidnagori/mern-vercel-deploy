@@ -21,8 +21,12 @@ app.use(express.urlencoded({extended:true}))
 
 
 app.use(cookieParser());
-
-app.use(cors())
+const corsConfig ={
+    origin:"*",
+    credential:true,
+    methods:["GET","POST","PUT","DELETE"]
+}
+app.use(cors(corsConfig))
 
 app.use('/api/users', userRoutes)
 
