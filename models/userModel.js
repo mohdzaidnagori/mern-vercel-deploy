@@ -64,35 +64,5 @@ const User = sequelize.define('User', {
 });
 
 
-const HomeSchema = sequelize.define('HomeSchema', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    project_name: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    redirect_link: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    banner_img: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    is_active: {
-        type: DataTypes.STRING
-    },
-    created_at: {
-        type: DataTypes.DATE
-    },
-},
-    {
-        tableName: 'tbl_homebanner',
-        timestamps: false, // Set to true if you want Sequelize to automatically manage createdAt and updatedAt columns
-    }
-)
 
 export default User;
