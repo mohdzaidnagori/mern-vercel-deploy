@@ -3,29 +3,28 @@ import jwt from "jsonwebtoken"
 import User from "../models/userModel.js";
 
 
-const protect = asyncHandler(async (req ,res, next) => {
-    let token ;
+const protect = asyncHandler(async (req, res, next) => {
 
-    token = req.cookies.jwt;
- 
 
-    if(token){
-        try {
-           const decoded = jwt.verify(token, process.env.JWT_SECRET);
-           
-           req.user = await User.findById(decoded.userId).select('-password');
+    const accessToken = req.cookies.accessToken;
 
-           next();
-        } catch (error) {
-            console.log(error);
-            res.status(401);
-            throw new Error('Not authorized, token failed')
+    if (!accessToken) {
+        res.status(401).json({ message: 'Not authorized, access token missing' });
+        return;
+    }
+    
+    try {
+        const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
+        req.user = await User.findByPk(decoded.userId);
+        next();
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            res.status(401).json({ message: 'Access token expired, please refresh token' });
+        } else {
+            res.status(401).json({ message: 'Not authorized, token invalid' });
         }
     }
-    else{
-        res.status(401)
-        throw new Error('Not authorized, no token')
-    }
-})
+});
 
-export { protect }
+export { protect };
+

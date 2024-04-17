@@ -1,49 +1,98 @@
-import mongoose from "mongoose";
-import bcrypt from "bcryptjs"
 
 
-const userSchema = mongoose.Schema(
-    {
-        name:{
-            type:String,
-            required:true
-        },
-        email:{
-            type:String,
-            required:true,
-            unique:true
-        },
-        password:{
-            type:String,
-            required:true
-        },
-        name:{
-            type:String,
-            required:true
-        },
+import { DataTypes } from 'sequelize';
+// Path to the database configuration file
+import { sequelize } from "../config/db.js";
+
+const User = sequelize.define('User', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
     },
+    username: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    first_name: {
+        type: DataTypes.STRING
+    },
+    last_name: {
+        type: DataTypes.STRING
+    },
+    logo: {
+        type: DataTypes.STRING
+    },
+    company_name: {
+        type: DataTypes.STRING
+    },
+    address: {
+        type: DataTypes.STRING
+    },
+    communication: {
+        type: DataTypes.TEXT
+    },
+    role: {
+        type: DataTypes.STRING
+    },
+    created_at: {
+        type: DataTypes.DATE
+    },
+    is_active: {
+        type: DataTypes.STRING
+    },
+    team_name: {
+        type: DataTypes.STRING
+    },
+    channel_ptn_id: {
+        type: DataTypes.INTEGER
+    },
+    contact_number: {
+        type: DataTypes.INTEGER
+    }
+}, {
+    tableName: 'tbl_user_details',
+    timestamps: false, // Set to true if you want Sequelize to automatically manage createdAt and updatedAt columns
+});
+
+
+const HomeSchema = sequelize.define('HomeSchema', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    project_name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    redirect_link: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    banner_img: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    is_active: {
+        type: DataTypes.STRING
+    },
+    created_at: {
+        type: DataTypes.DATE
+    },
+},
     {
-        timestamps:true
+        tableName: 'tbl_homebanner',
+        timestamps: false, // Set to true if you want Sequelize to automatically manage createdAt and updatedAt columns
     }
 )
 
-
-// Match user entered password to hashed password in database
-userSchema.methods.matchPassword = async function (enteredPassword){
-    return await bcrypt.compare(enteredPassword , this.password)
-}
-
-
-// Encrypt password using bcrypt
-userSchema.pre('save', async function (next) {
-    if(!this.isModified('password')){
-        next();
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password , salt)
-})
-
-const User = mongoose.model('User', userSchema)
-
-export default User
+export default User;
